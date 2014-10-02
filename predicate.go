@@ -12,3 +12,15 @@ type PredicateFunc func(X) bool
 func (p PredicateFunc) P(x X) bool {
 	return p(x)
 }
+
+func And(s []Predicate) Predicate {
+	return PredicateFunc(func(x X) bool {
+		for _, p := range s {
+			if !p.P(x) {
+				return false
+			}
+		}
+
+		return true
+	})
+}
