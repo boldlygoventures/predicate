@@ -8,3 +8,7 @@ type Predicate interface {
 }
 
 type PredicateFunc func(X) bool
+
+func (p PredicateFunc) P(x X) bool {
+	return p(x)
+}
