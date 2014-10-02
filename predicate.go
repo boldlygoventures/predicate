@@ -13,6 +13,12 @@ func (p PredicateFunc) P(x X) bool {
 	return p(x)
 }
 
+func True() Predicate {
+	return PredicateFunc(func(x X) bool {
+		return true
+	})
+}
+
 func And(s []Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		for _, p := range s {
