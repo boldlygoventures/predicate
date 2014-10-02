@@ -60,3 +60,15 @@ func And(s []Predicate) Predicate {
 		return true
 	})
 }
+
+func Or(s []Predicate) Predicate {
+	return PredicateFunc(func(x X) bool {
+		for _, p := range s {
+			if p.P(x) {
+				return true
+			}
+		}
+
+		return false
+	})
+}
