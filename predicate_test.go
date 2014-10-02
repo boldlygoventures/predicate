@@ -68,3 +68,34 @@ func TestAnd(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestOr(t *testing.T) {
+	var p Predicate
+
+	// true || true -> true
+	p = Or([]Predicate{
+		True(),
+		True(),
+	})
+	if !p.P(nil) {
+		t.Fail()
+	}
+
+	// true || false -> true
+	p = Or([]Predicate{
+		True(),
+		False(),
+	})
+	if !p.P(nil) {
+		t.Fail()
+	}
+
+	// false || false -> false
+	p = Or([]Predicate{
+		False(),
+		False(),
+	})
+	if p.P(nil) {
+		t.Fail()
+	}
+}
