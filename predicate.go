@@ -49,7 +49,7 @@ func False() Predicate {
 	})
 }
 
-func And(s []Predicate) Predicate {
+func And(s ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		for _, p := range s {
 			if !p.P(x) {
@@ -61,7 +61,7 @@ func And(s []Predicate) Predicate {
 	})
 }
 
-func Or(s []Predicate) Predicate {
+func Or(s ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		for _, p := range s {
 			if p.P(x) {
@@ -73,8 +73,8 @@ func Or(s []Predicate) Predicate {
 	})
 }
 
-func Not(s []Predicate) Predicate {
+func Not(s ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
-		return !Or(s).P(x)
+		return !Or(s...).P(x)
 	})
 }

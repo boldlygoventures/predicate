@@ -27,13 +27,13 @@ package predicate
 import "testing"
 
 func TestTrue(t *testing.T) {
-	if !True().P(nil) {
+	if True().P(nil) != true {
 		t.Fail()
 	}
 }
 
 func TestFalse(t *testing.T) {
-	if False().P(nil) {
+	if False().P(nil) != false {
 		t.Fail()
 	}
 }
@@ -42,29 +42,20 @@ func TestAnd(t *testing.T) {
 	var p Predicate
 
 	// true && true -> true
-	p = And([]Predicate{
-		True(),
-		True(),
-	})
-	if !p.P(nil) {
+	p = And(True(), True())
+	if p.P(nil) != true {
 		t.Fail()
 	}
 
 	// true && false -> false
-	p = And([]Predicate{
-		True(),
-		False(),
-	})
-	if p.P(nil) {
+	p = And(True(), False())
+	if p.P(nil) != false {
 		t.Fail()
 	}
 
 	// false && false -> false
-	p = And([]Predicate{
-		False(),
-		False(),
-	})
-	if p.P(nil) {
+	p = And(False(), False())
+	if p.P(nil) != false {
 		t.Fail()
 	}
 }
@@ -73,29 +64,20 @@ func TestOr(t *testing.T) {
 	var p Predicate
 
 	// true || true -> true
-	p = Or([]Predicate{
-		True(),
-		True(),
-	})
-	if !p.P(nil) {
+	p = Or(True(), True())
+	if p.P(nil) != true {
 		t.Fail()
 	}
 
 	// true || false -> true
-	p = Or([]Predicate{
-		True(),
-		False(),
-	})
-	if !p.P(nil) {
+	p = Or(True(), False())
+	if p.P(nil) != true {
 		t.Fail()
 	}
 
 	// false || false -> false
-	p = Or([]Predicate{
-		False(),
-		False(),
-	})
-	if p.P(nil) {
+	p = Or(False(), False())
+	if p.P(nil) != false {
 		t.Fail()
 	}
 }
@@ -103,30 +85,33 @@ func TestOr(t *testing.T) {
 func TestNot(t *testing.T) {
 	var p Predicate
 
+	// !true -> false
+	p = Not(True())
+	if p.P(nil) != false {
+		t.Fail()
+	}
+
+	// !false -> true
+	p = Not(False())
+	if p.P(nil) != true {
+		t.Fail()
+	}
+
 	// !true && !true -> false
-	p = Not([]Predicate{
-		True(),
-		True(),
-	})
-	if p.P(nil) {
+	p = Not(True(), True())
+	if p.P(nil) != false {
 		t.Fail()
 	}
 
 	// !true && !false -> false
-	p = Not([]Predicate{
-		True(),
-		False(),
-	})
-	if p.P(nil) {
+	p = Not(True(), False())
+	if p.P(nil) != false {
 		t.Fail()
 	}
 
 	// !false && !false -> true
-	p = Not([]Predicate{
-		False(),
-		False(),
-	})
-	if !p.P(nil) {
+	p = Not(False(), False())
+	if p.P(nil) != true {
 		t.Fail()
 	}
 }
