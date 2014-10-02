@@ -72,3 +72,9 @@ func Or(s []Predicate) Predicate {
 		return false
 	})
 }
+
+func Not(s []Predicate) Predicate {
+	return PredicateFunc(func(x X) bool {
+		return !Or(s).P(x)
+	})
+}
