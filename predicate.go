@@ -19,6 +19,12 @@ func True() Predicate {
 	})
 }
 
+func False() Predicate {
+	return PredicateFunc(func(x X) bool {
+		return false
+	})
+}
+
 func And(s []Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		for _, p := range s {
