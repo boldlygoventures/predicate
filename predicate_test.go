@@ -7,3 +7,9 @@ func TestTrue(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestFalse(t *testing.T) {
+	if False().P(nil) {
+		t.Fail()
+	}
+}
