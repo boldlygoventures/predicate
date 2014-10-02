@@ -99,3 +99,34 @@ func TestOr(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestNot(t *testing.T) {
+	var p Predicate
+
+	// !true && !true -> false
+	p = Not([]Predicate{
+		True(),
+		True(),
+	})
+	if p.P(nil) {
+		t.Fail()
+	}
+
+	// !true && !false -> false
+	p = Not([]Predicate{
+		True(),
+		False(),
+	})
+	if p.P(nil) {
+		t.Fail()
+	}
+
+	// !false && !false -> true
+	p = Not([]Predicate{
+		False(),
+		False(),
+	})
+	if !p.P(nil) {
+		t.Fail()
+	}
+}
