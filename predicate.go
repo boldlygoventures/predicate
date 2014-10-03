@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// Package predicate defines the Predicate interface and provides basic predicates.
 package predicate
 
 // X represents a value to be evaluated by a Predicate.
