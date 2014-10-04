@@ -50,32 +50,32 @@ func False() Predicate {
 	})
 }
 
-func And(s ...Predicate) Predicate {
-	return PredicateFunc(func(x X) bool {
-		for _, p := range s {
-			if !p.P(x) {
-				return false
-			}
-		}
+type And []Predicate
 
-		return true
-	})
+func (p And) P(x X) bool {
+	for _, p := range p {
+		if !p.P(x) {
+			return false
+		}
+	}
+
+	return true
 }
 
-func Or(s ...Predicate) Predicate {
-	return PredicateFunc(func(x X) bool {
-		for _, p := range s {
-			if p.P(x) {
-				return true
-			}
-		}
+type Or []Predicate
 
-		return false
-	})
+func (p Or) P(x X) bool {
+	for _, p := range p {
+		if p.P(x) {
+			return true
+		}
+	}
+
+	return false
 }
 
-func Not(s ...Predicate) Predicate {
+func Not(p ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
-		return !Or(s...).P(x)
+		return !Or(p).P(x)
 	})
 }
