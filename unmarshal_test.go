@@ -24,16 +24,18 @@ SOFTWARE.
 
 package predicate
 
-// UnmarshalJSON satisfies the json.Unmarshaler interface.
-func (p *And) UnmarshalJSON(data []byte) error {
-	return unmarshalJSON(data, p)
-}
+import "testing"
 
-// UnmarshalJSON satisfies the json.Unmarshaler interface.
-func (p *Or) UnmarshalJSON(data []byte) error {
-	return unmarshalJSON(data, p)
-}
+func TestUnmarshalJSON(t *testing.T) {
+	var (
+		data []byte
+		v    interface{}
+	)
 
-func unmarshalJSON(data []byte, v interface{}) error {
-	return nil
+	data = []byte(`{"a":"b"}`)
+	if err := unmarshalJSON(data, &v); err != nil {
+		t.Error(err)
+	} else {
+		t.Logf("%#v\n", v)
+	}
 }
