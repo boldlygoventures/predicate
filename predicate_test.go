@@ -100,6 +100,65 @@ func TestOr(t *testing.T) {
 	}
 }
 
+func TestXor(t *testing.T) {
+	var p Predicate
+
+	// XOR [] -> false
+	p = Xor([]Predicate{})
+	if p.P(nil) != false {
+		t.Fail()
+	}
+
+	// XOR nil -> false
+	p = Xor(nil)
+	if p.P(nil) != false {
+		t.Fail()
+	}
+
+	// XOR true -> true
+	p = Xor([]Predicate{
+		True(),
+	})
+	if p.P(nil) != true {
+		t.Fail()
+	}
+
+	// XOR false -> false
+	p = Xor([]Predicate{
+		False(),
+	})
+	if p.P(nil) != false {
+		t.Fail()
+	}
+
+	// true XOR true -> false
+	p = Xor([]Predicate{
+		True(),
+		True(),
+	})
+	if p.P(nil) != false {
+		t.Fail()
+	}
+
+	// true XOR false -> true
+	p = Xor([]Predicate{
+		True(),
+		False(),
+	})
+	if p.P(nil) != true {
+		t.Fail()
+	}
+
+	// false XOR false -> false
+	p = Xor([]Predicate{
+		False(),
+		False(),
+	})
+	if p.P(nil) != false {
+		t.Fail()
+	}
+}
+
 func TestNot(t *testing.T) {
 	var p Predicate
 

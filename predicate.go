@@ -74,6 +74,25 @@ func (p Or) P(x X) bool {
 	return false
 }
 
+type Xor []Predicate
+
+// P returns true if and only if one of its Predicates is true for the given X.
+func (p Xor) P(x X) bool {
+	var n int
+	for _, p := range p {
+		if p.P(x) {
+			n++
+		}
+
+		// short circuit
+		if n > 1 {
+			break
+		}
+	}
+
+	return n == 1
+}
+
 func Not(p ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		return !Or(p).P(x)
