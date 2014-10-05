@@ -52,6 +52,8 @@ func False() Predicate {
 
 type And []Predicate
 
+// P returns true if and only all of its member Predicates is true for `x`. The logic is short circuited,
+// returning false when a member Predicate is false.
 func (p And) P(x X) bool {
 	for _, p := range p {
 		if !p.P(x) {
@@ -64,6 +66,8 @@ func (p And) P(x X) bool {
 
 type Or []Predicate
 
+// P returns true if any of its member Predicates is true for `x`. The logic is short circuited,
+// returning true when a member Predicate is true.
 func (p Or) P(x X) bool {
 	for _, p := range p {
 		if p.P(x) {
@@ -76,7 +80,8 @@ func (p Or) P(x X) bool {
 
 type Xor []Predicate
 
-// P returns true if and only if one of its Predicates is true for the given X.
+// P returns true if and only if one of its member Predicates is true for `x`. The logic is short circuited, returning
+// false when a second member Predicate is true.
 func (p Xor) P(x X) bool {
 	var n int
 	for _, p := range p {
@@ -86,7 +91,7 @@ func (p Xor) P(x X) bool {
 
 		// short circuit
 		if n > 1 {
-			break
+			return false
 		}
 	}
 
