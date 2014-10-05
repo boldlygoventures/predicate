@@ -24,16 +24,84 @@ SOFTWARE.
 
 package predicate
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // UnmarshalJSON satisfies the json.Unmarshaler interface.
 func (p *And) UnmarshalJSON(data []byte) error {
-	return unmarshalJSON(data, p)
+	v, err := unmarshalJSON(data)
+	*p = And(v.([]Predicate))
+	return err
 }
 
 // UnmarshalJSON satisfies the json.Unmarshaler interface.
 func (p *Or) UnmarshalJSON(data []byte) error {
-	return unmarshalJSON(data, p)
+	v, err := unmarshalJSON(data)
+	*p = Or(v.([]Predicate))
+	return err
 }
 
-func unmarshalJSON(data []byte, v interface{}) error {
+// UnmarshalJSON satisfies the json.Unmarshaler interface.
+func (p *Xor) UnmarshalJSON(data []byte) error {
+	v, err := unmarshalJSON(data)
+	*p = Xor(v.([]Predicate))
+	return err
+}
+
+func unmarshalJSON(data []byte) (interface{}, error) {
+	switch data[0] {
+	case '{':
+		fmt.Println("object")
+		if err := unmarshalJSONObject(data); err != nil {
+			return nil, err
+		}
+	case '[':
+		fmt.Println("array")
+		if err := unmarshalJSONArray(data); err != nil {
+			return nil, err
+		}
+	default:
+		var v interface{}
+		if err := json.Unmarshal(data, &v); err != nil {
+			return nil, err
+		}
+
+		fmt.Println("value", v)
+	}
+
+	return nil, nil
+}
+
+func unmarshalJSONObject(data []byte) error {
+	var v map[string]json.RawMessage
+
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+
+	for k, v := range v {
+		fmt.Println(k)
+		if _, err := unmarshalJSON(v); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func unmarshalJSONArray(data []byte) error {
+	var v []json.RawMessage
+
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+
+	for _, v := range v {
+		if _, err := unmarshalJSON(v); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

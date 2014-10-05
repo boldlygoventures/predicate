@@ -29,11 +29,11 @@ import "testing"
 func TestUnmarshalJSON(t *testing.T) {
 	var (
 		data []byte
-		v    interface{}
+		//		v    And //interface{}
 	)
 
-	data = []byte(`{"a":"b"}`)
-	if err := unmarshalJSON(data, &v); err != nil {
+	data = []byte(`[{"and":"a"},{"or":"b"},{"not":"c"}]`)
+	if v, err := unmarshalJSON(data); err != nil {
 		t.Error(err)
 	} else {
 		t.Logf("%#v\n", v)
