@@ -26,6 +26,15 @@ package predicate
 
 import "testing"
 
+var js = [][]byte{
+	[]byte(`"42"`),
+	[]byte(`42`),
+	[]byte(`true`),
+	[]byte(`null`),
+	[]byte(`{"x":42}`),
+	[]byte(`[42,true]`),
+}
+
 func TestUnmarshalJSON(t *testing.T) {
 	var (
 		data []byte
@@ -33,7 +42,8 @@ func TestUnmarshalJSON(t *testing.T) {
 	)
 
 	data = []byte(`[{"and":"a"},{"or":"b"},{"not":"c"}]`)
-	if v, err := unmarshalJSON(data); err != nil {
+	var v interface{}
+	if err := unmarshalJSON(data, &v); err != nil {
 		t.Error(err)
 	} else {
 		t.Logf("%#v\n", v)
