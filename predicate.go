@@ -32,18 +32,22 @@ type Predicate interface {
 	P(X) bool
 }
 
+// PredicateFunc maps X to bool
 type PredicateFunc func(X) bool
 
+// P satisfies the Predicate interface.
 func (p PredicateFunc) P(x X) bool {
 	return p(x)
 }
 
+// True returns a PredicateFunc that will always return true, for any x.
 func True() Predicate {
 	return PredicateFunc(func(x X) bool {
 		return true
 	})
 }
 
+// True returns a PredicateFunc that will always return false, for any x.
 func False() Predicate {
 	return PredicateFunc(func(x X) bool {
 		return false
@@ -52,7 +56,7 @@ func False() Predicate {
 
 type And []Predicate
 
-// P returns true if and only all of its member Predicates is true for `x`. The logic is short circuited,
+// P returns true if and only all of its member Predicates is true for x. The logic is short circuited,
 // returning false when a member Predicate is false.
 func (p And) P(x X) bool {
 	for _, p := range p {
@@ -66,7 +70,7 @@ func (p And) P(x X) bool {
 
 type Or []Predicate
 
-// P returns true if any of its member Predicates is true for `x`. The logic is short circuited,
+// P returns true if any of its member Predicates is true for x. The logic is short circuited,
 // returning true when a member Predicate is true.
 func (p Or) P(x X) bool {
 	for _, p := range p {
@@ -80,7 +84,7 @@ func (p Or) P(x X) bool {
 
 type Xor []Predicate
 
-// P returns true if and only if one of its member Predicates is true for `x`. The logic is short circuited, returning
+// P returns true if and only if one of its member Predicates is true for x. The logic is short circuited, returning
 // false when a second member Predicate is true.
 func (p Xor) P(x X) bool {
 	var n int
@@ -98,6 +102,7 @@ func (p Xor) P(x X) bool {
 	return n == 1
 }
 
+// Not returns a PredicateFunc that will return false if any of the passed Predicates is true for x.
 func Not(p ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		return !Or(p).P(x)
