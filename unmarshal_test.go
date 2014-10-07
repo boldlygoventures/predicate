@@ -24,7 +24,10 @@ SOFTWARE.
 
 package predicate
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 var js = [][]byte{
 	[]byte(`"42"`),
@@ -41,9 +44,9 @@ func TestUnmarshalJSON(t *testing.T) {
 		//		v    And //interface{}
 	)
 
-	data = []byte(`[{"and":"a"},{"or":"b"},{"not":"c"}]`)
-	var v interface{}
-	if err := unmarshalJSON(data, &v); err != nil {
+	data = []byte(`[{"and":"a"},{"or":"b"},{"not":"c"},{"xor":"d"},{"xyz":"e"}]`)
+	var v predicate //interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
 		t.Error(err)
 	} else {
 		t.Logf("%#v\n", v)
