@@ -29,9 +29,10 @@ import (
 	"fmt"
 )
 
+/*
 // UnmarshalJSON satisfies the json.Unmarshaler interface.
 func (p *And) UnmarshalJSON(data []byte) error {
-	var v predicate
+	var v Set
 
 	if err := unmarshalJSON(data, &v); err != nil {
 		return err
@@ -43,7 +44,7 @@ func (p *And) UnmarshalJSON(data []byte) error {
 
 // UnmarshalJSON satisfies the json.Unmarshaler interface.
 func (p *Or) UnmarshalJSON(data []byte) error {
-	var v predicate
+	var v Set
 
 	if err := unmarshalJSON(data, &v); err != nil {
 		return err
@@ -55,7 +56,7 @@ func (p *Or) UnmarshalJSON(data []byte) error {
 
 // UnmarshalJSON satisfies the json.Unmarshaler interface.
 func (p *Xor) UnmarshalJSON(data []byte) error {
-	var v predicate
+	var v Set
 
 	if err := unmarshalJSON(data, &v); err != nil {
 		return err
@@ -64,104 +65,123 @@ func (p *Xor) UnmarshalJSON(data []byte) error {
 	*p = Xor(v)
 	return nil
 }
+*/
 
-type predicate []Predicate
-
-func (p *predicate) UnmarshalJSON(data []byte) error {
+func (p *Set) UnmarshalJSON(data []byte) error {
 	var v interface{}
+	fmt.Printf("> predicate.UnmarshalJSON():\t%v -> %#v\n", string(data), v)
 
 	if err := unmarshalJSON(data, &v); err != nil {
 		return err
 	}
 
-	fmt.Printf("predicate.UnmarshalJSON():\t%v -> %#v\n", string(data), v)
+	*p = make(Set, 0)
 
+	fmt.Printf("< predicate.UnmarshalJSON():\t%v -> %#v\n", string(data), v)
 	return nil
 }
 
 func unmarshalJSON(data []byte, v interface{}) error {
+	fmt.Printf("> unmarshalJSON():\t\t\t\t%v -> %#v\n", string(data), v)
+	var err error
+
 	switch data[0] {
 	case '{':
-		if err := unmarshalJSONObject(data, v); err != nil {
-			return err
-		}
-		//		fmt.Printf("object: %#v\n", v)
+		err = unmarshalJSONObject(data, v)
 	case '[':
-		if err := unmarshalJSONArray(data, v); err != nil {
-			return err
-		}
-		//		fmt.Printf("array: %#v\n", v)
+		err = unmarshalJSONArray(data, v)
 	default:
-		if err := json.Unmarshal(data, v); err != nil {
-			return err
-		}
-		//		fmt.Printf("value: %#v\n", v)
+		err = json.Unmarshal(data, v)
 	}
 
-	fmt.Printf("unmarshalJSON():\t\t\t%v -> %#v\n", string(data), v)
-	return nil
+	fmt.Printf("< unmarshalJSON():\t\t\t\t%v -> %#v\n", string(data), v)
+	return err
 }
 
 func unmarshalJSONObject(data []byte, v interface{}) error {
+	fmt.Printf("> unmarshalJSONObject():\t\t%v -> %#v\n", string(data), v)
 	var raw map[string]json.RawMessage
 
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
 
-	ps := make([]Predicate, 0)
+	s := make(Set, 0)
 
 	for k, d := range raw {
-		var p predicate
-		if err := json.Unmarshal(d, &p); err != nil {
-			return err
-		}
+		var p Predicate
 
 		switch k {
-		case "and":
-			ps = append(ps, And(p))
-		case "or":
-			ps = append(ps, Or(p))
-		case "xor":
-			ps = append(ps, Xor(p))
-		case "not":
-			ps = append(ps, Not(p...))
+		// handle named predicates
+		case "and", "or", "xor", "not":
+			var x Set
+
+			if err := json.Unmarshal(d, &x); err != nil {
+				return err
+			}
+
+			switch k {
+			case "and":
+				p = And(x)
+			case "or":
+				p = Or(x)
+			case "xor":
+				p = Xor(x)
+			case "not":
+				p = Not(x...)
+			}
+		// handle unnamed predicates
 		default:
-			//			fmt.Printf("%q: %#v\n", k, p)
+			var x interface{}
+
+			if err := json.Unmarshal(d, &x); err != nil {
+				return err
+			}
+
+			p = Exists(k, x)
 		}
+
+		s = append(s, p)
 	}
 
-	v = &ps
-	fmt.Printf("unmarshalJSONObject():\t\t%v -> %#v\n", string(data), v)
+	v = &s
+	fmt.Printf("< unmarshalJSONObject():\t\t%v -> %#v\n", string(data), v)
 	return nil
 }
 
 func unmarshalJSONArray(data []byte, v interface{}) error {
+	fmt.Printf("> unmarshalJSONArray():\t\t%v -> %#v\n", string(data), v)
 	var raw []json.RawMessage
 
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
 
-	ps := make([]Predicate, 0)
+	s := make(Set, 0)
 
 	for _, d := range raw {
 		switch d[0] {
 		case '{':
-			var p predicate
+			var p And
+
 			if err := unmarshalJSON(d, &p); err != nil {
 				return err
 			}
-			ps = append(ps, And(p))
+
+			s = append(s, p)
 		default:
-			var v interface{}
-			if err := unmarshalJSON(d, &v); err != nil {
+			var x interface{}
+			if err := unmarshalJSON(d, &x); err != nil {
 				return err
 			}
+			v = &x
 		}
 	}
 
-	v = &ps
-	fmt.Printf("unmarshalJSONArray():\t\t%v -> %#v\n", string(data), v)
+	if len(s) > 0 {
+		v = &s
+	}
+
+	fmt.Printf("< unmarshalJSONArray():\t\t%v -> %#v\n", string(data), v)
 	return nil
 }

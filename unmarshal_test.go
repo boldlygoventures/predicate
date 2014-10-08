@@ -44,8 +44,9 @@ func TestUnmarshalJSON(t *testing.T) {
 		//		v    And //interface{}
 	)
 
-	data = []byte(`[{"and":"a"},{"or":"b"},{"not":"c"},{"xor":"d"},{"xyz":"e"}]`)
-	var v predicate //interface{}
+	data = []byte(`[{"and":[{"x":1,"y":2}]},{"or":null},{"not":null},{"xor":null},{"xyz":"e"},{"acb":["f","g"]}]`)
+	data = []byte(`{"and":{"x":1}}`)
+	var v Set //interface{}
 	if err := json.Unmarshal(data, &v); err != nil {
 		t.Error(err)
 	} else {

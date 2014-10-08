@@ -54,7 +54,9 @@ func False() Predicate {
 	})
 }
 
-type And []Predicate
+type Set []Predicate
+
+type And Set
 
 // P returns true if and only all of its member Predicates is true for x. The logic is short circuited,
 // returning false when a member Predicate is false.
@@ -68,7 +70,7 @@ func (p And) P(x X) bool {
 	return true
 }
 
-type Or []Predicate
+type Or Set
 
 // P returns true if any of its member Predicates is true for x. The logic is short circuited,
 // returning true when a member Predicate is true.
@@ -82,7 +84,7 @@ func (p Or) P(x X) bool {
 	return false
 }
 
-type Xor []Predicate
+type Xor Set
 
 // P returns true if and only if one of its member Predicates is true for x. The logic is short circuited, returning
 // false when a second member Predicate is true.
@@ -106,5 +108,11 @@ func (p Xor) P(x X) bool {
 func Not(p ...Predicate) Predicate {
 	return PredicateFunc(func(x X) bool {
 		return !Or(p).P(x)
+	})
+}
+
+func Exists(k string, s interface{}) Predicate {
+	return PredicateFunc(func(x X) bool {
+		return true
 	})
 }
