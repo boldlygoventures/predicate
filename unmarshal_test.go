@@ -29,38 +29,50 @@ import (
 	"testing"
 )
 
-var js = [][]byte{
-	[]byte(`"42"`),
-	[]byte(`42`),
-	[]byte(`true`),
-	[]byte(`null`),
-	[]byte(`{"x":42}`),
-	[]byte(`[42,true]`),
-}
-
-func TestUnmarshalJSON(t *testing.T) {
-	data := []byte(`[{"and":[{"x":"a"}]}]`)
-	var v Set
-	if err := json.Unmarshal(data, &v); err != nil {
-		t.Error(err)
-	} else {
-		//		t.Logf("%#v\n", v)
-	}
-
-	if And(v).P(map[string]interface{}{"x": "a"}) {
-		//		t.Log(true)
-	} else {
-		//		t.Log(false)
-		t.Fail()
-	}
-}
-
-func TestUnmarsalJSON_Invalid(t *testing.T) {
+func TestSet_UnmarshalJSON(t *testing.T) {
 	var (
 		data []byte
 		v    Set
 	)
 
+	/***** Positive Cases *****/
+	data = []byte(`[{"and":[{"x":"a"}]}]`)
+	if err := json.Unmarshal(data, &v); err != nil {
+		t.Error(err)
+	}
+
+	if And(v).P(map[string]interface{}{"x": "a"}) != true {
+		t.Fail()
+	}
+
+	data = []byte(`[{"or":[{"x":"a"}]}]`)
+	if err := json.Unmarshal(data, &v); err != nil {
+		t.Error(err)
+	}
+
+	if And(v).P(map[string]interface{}{"x": "a"}) != true {
+		t.Fail()
+	}
+
+	data = []byte(`[{"xor":[{"x":"a"}]}]`)
+	if err := json.Unmarshal(data, &v); err != nil {
+		t.Error(err)
+	}
+
+	if And(v).P(map[string]interface{}{"x": "a"}) != true {
+		t.Fail()
+	}
+
+	data = []byte(`[{"not":[{"x":"a"}]}]`)
+	if err := json.Unmarshal(data, &v); err != nil {
+		t.Error(err)
+	}
+
+	if And(v).P(map[string]interface{}{"x": "a"}) == true {
+		t.Fail()
+	}
+
+	/***** Negative Cases *****/
 	data = nil
 	if err := json.Unmarshal(data, &v); err == nil {
 		t.Fail()
