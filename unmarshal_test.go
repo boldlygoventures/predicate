@@ -39,17 +39,70 @@ var js = [][]byte{
 }
 
 func TestUnmarshalJSON(t *testing.T) {
-	var (
-		data []byte
-		//		v    And //interface{}
-	)
-
-	data = []byte(`[{"and":[{"x":1,"y":2}]},{"or":null},{"not":null},{"xor":null},{"xyz":"e"},{"acb":["f","g"]}]`)
-	data = []byte(`{"and":{"x":1}}`)
-	var v Set //interface{}
+	data := []byte(`[{"and":[{"x":"a"}]}]`)
+	var v Set
 	if err := json.Unmarshal(data, &v); err != nil {
 		t.Error(err)
 	} else {
-		t.Logf("%#v\n", v)
+		//		t.Logf("%#v\n", v)
+	}
+
+	if And(v).P(map[string]interface{}{"x": "a"}) {
+		//		t.Log(true)
+	} else {
+		//		t.Log(false)
+		t.Fail()
+	}
+}
+
+func TestUnmarsalJSON_Invalid(t *testing.T) {
+	var (
+		data []byte
+		v    Set
+	)
+
+	data = nil
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = make([]byte, 0)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(``)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`"`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`{`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`{null}`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[null]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[{"and":null}]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
 	}
 }
