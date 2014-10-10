@@ -103,7 +103,22 @@ func TestSet_UnmarshalJSON(t *testing.T) {
 		t.Fail()
 	}
 
+	data = []byte(`[,]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
 	data = []byte(`{n}`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`{"abc":"xyz",}`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[n]`)
 	if err := json.Unmarshal(data, &v); err == nil {
 		t.Fail()
 	}
