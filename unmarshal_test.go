@@ -91,7 +91,17 @@ func TestUnmarsalJSON_Invalid(t *testing.T) {
 		t.Fail()
 	}
 
+	data = []byte(`{n}`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
 	data = []byte(`{null}`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[abc,]`)
 	if err := json.Unmarshal(data, &v); err == nil {
 		t.Fail()
 	}
@@ -102,6 +112,26 @@ func TestUnmarsalJSON_Invalid(t *testing.T) {
 	}
 
 	data = []byte(`[{"and":null}]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[{"or":null}]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[{"xor":null}]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[{"not":null}]`)
+	if err := json.Unmarshal(data, &v); err == nil {
+		t.Fail()
+	}
+
+	data = []byte(`[{"abc":nil}]`)
 	if err := json.Unmarshal(data, &v); err == nil {
 		t.Fail()
 	}
