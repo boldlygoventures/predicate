@@ -163,3 +163,36 @@ func TestSet_UnmarshalJSON(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestUnmarshalJSON(t *testing.T) {
+	var (
+		data []byte
+	)
+
+	data = []byte(`[{"abc":nil}]`)
+	if _, err := unmarshalJSON(data); err == nil {
+		t.Fail()
+	}
+}
+
+func TestUnmarshalJSONObject(t *testing.T) {
+	var (
+		data []byte
+	)
+
+	data = []byte(`[{"abc":nil}]`)
+	if _, err := unmarshalJSONObject(data); err == nil {
+		t.Fail()
+	}
+}
+
+func TestUnmarshalJSONArray(t *testing.T) {
+	var (
+		data []byte
+	)
+
+	data = []byte(`[{"abc":nil}]`)
+	if _, err := unmarshalJSONObject(data); err == nil {
+		t.Fail()
+	}
+}
