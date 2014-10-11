@@ -5,7 +5,7 @@
 Predicate
 =========
 
-**Alpha: Do NOT use for production code!** 
+**BETA: Do NOT use for production code!** 
 
 A predicate is a function that returns `true` or `false` based on the value passed to it.
 
