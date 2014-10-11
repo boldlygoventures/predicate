@@ -184,6 +184,11 @@ func TestUnmarshalJSONObject(t *testing.T) {
 	if _, err := unmarshalJSONObject(data); err == nil {
 		t.Fail()
 	}
+
+	data = []byte(`{"abc":["a","b","c",]}`)
+	if _, err := unmarshalJSONObject(data); err == nil {
+		t.Fail()
+	}
 }
 
 func TestUnmarshalJSONArray(t *testing.T) {
