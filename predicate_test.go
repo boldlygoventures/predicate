@@ -200,4 +200,29 @@ func TestExists(t *testing.T) {
 	if p.P(map[string]interface{}{"a": 1}) != true {
 		t.Fail()
 	}
+
+	p = Exists("a", map[string]interface{}{"b": 1})
+	if p.P(map[string]interface{}{"a": 1}) != true {
+		t.Fail()
+	}
+
+	p = Exists("a", []interface{}{1})
+	if p.P(map[string]interface{}{"a": 1}) != true {
+		t.Fail()
+	}
+
+	p = Exists("a", 1)
+	if p.P(1) != true {
+		t.Fail()
+	}
+
+	p = Exists("a", map[string]interface{}{"b": 1})
+	if p.P(1) != true {
+		t.Fail()
+	}
+
+	p = Exists("a", []interface{}{1})
+	if p.P(1) != true {
+		t.Fail()
+	}
 }
