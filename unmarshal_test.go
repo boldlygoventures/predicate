@@ -38,7 +38,7 @@ var (
 	}
 
 	nj = [][]byte{
-		[]byte(nil),
+		nil,
 		make([]byte, 0),
 		[]byte(``),
 		[]byte(`"`),
