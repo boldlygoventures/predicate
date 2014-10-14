@@ -131,7 +131,7 @@ func Exists(k string, s interface{}) Predicate {
 					return true
 				}
 			}
-		case string, float64, bool, nil:
+		default: //json: string, float64, bool, nil
 			return s == x
 		}
 

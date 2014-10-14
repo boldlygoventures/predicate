@@ -192,3 +192,12 @@ func TestNot(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestExists(t *testing.T) {
+	var p Predicate
+
+	p = Exists("a", 1)
+	if p.P(map[string]interface{}{"a": 1}) != true {
+		t.Fail()
+	}
+}
