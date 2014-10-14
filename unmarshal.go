@@ -29,6 +29,18 @@ import (
 	"fmt"
 )
 
+func (p *And) UnmarshalJSON(data []byte) error {
+	var s Set
+	var err error
+
+	if err = json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	*p = And(s)
+	return nil
+}
+
 func (p *Set) UnmarshalJSON(data []byte) error {
 	var v interface{}
 	var err error

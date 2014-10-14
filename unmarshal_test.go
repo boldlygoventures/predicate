@@ -29,138 +29,69 @@ import (
 	"testing"
 )
 
-func TestSet_UnmarshalJSON(t *testing.T) {
-	var (
-		data []byte
-		v    Set
-	)
+var (
+	pj = [][]byte{
+		[]byte(`[{"and":[{"x":"a"}]}]`),
+		[]byte(`[{"or":[{"x":"a"}]}]`),
+		[]byte(`[{"xor":[{"x":"a"}]}]`),
+		[]byte(`[{"not":[{"x":"a"}]}]`),
+	}
+
+	nj = [][]byte{
+		[]byte(nil),
+		make([]byte, 0),
+		[]byte(``),
+		[]byte(`"`),
+		[]byte(`{`),
+		[]byte(`[`),
+		[]byte(`[,]`),
+		[]byte(`{n}`),
+		[]byte(`{"abc":"xyz",}`),
+		[]byte(`[n]`),
+		[]byte(`{null}`),
+		[]byte(`[abc,]`),
+		[]byte(`[null]`),
+		[]byte(`[{"and":null}]`),
+		[]byte(`[{"or":null}]`),
+		[]byte(`[{"xor":null}]`),
+		[]byte(`[{"not":null}]`),
+		[]byte(`[{"abc":nil}]`),
+	}
+)
+
+func TestAnd_UnmarshalJSON(t *testing.T) {
+	var v And
 
 	/***** Positive Cases *****/
-	data = []byte(`[{"and":[{"x":"a"}]}]`)
-	if err := json.Unmarshal(data, &v); err != nil {
-		t.Error(err)
-	}
-
-	if And(v).P(map[string]interface{}{"x": "a"}) != true {
-		t.Fail()
-	}
-
-	data = []byte(`[{"or":[{"x":"a"}]}]`)
-	if err := json.Unmarshal(data, &v); err != nil {
-		t.Error(err)
-	}
-
-	if And(v).P(map[string]interface{}{"x": "a"}) != true {
-		t.Fail()
-	}
-
-	data = []byte(`[{"xor":[{"x":"a"}]}]`)
-	if err := json.Unmarshal(data, &v); err != nil {
-		t.Error(err)
-	}
-
-	if And(v).P(map[string]interface{}{"x": "a"}) != true {
-		t.Fail()
-	}
-
-	data = []byte(`[{"not":[{"x":"a"}]}]`)
-	if err := json.Unmarshal(data, &v); err != nil {
-		t.Error(err)
-	}
-
-	if And(v).P(map[string]interface{}{"x": "a"}) == true {
-		t.Fail()
+	for _, data := range pj {
+		if err := json.Unmarshal([]byte(data), &v); err != nil {
+			t.Error(err)
+		}
 	}
 
 	/***** Negative Cases *****/
-	data = nil
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
+	for _, data := range nj {
+		if err := json.Unmarshal(data, &v); err == nil {
+			t.Error(err)
+		}
+	}
+}
+
+func TestSet_UnmarshalJSON(t *testing.T) {
+	var v Set
+
+	/***** Positive Cases *****/
+	for _, data := range pj {
+		if err := json.Unmarshal([]byte(data), &v); err != nil {
+			t.Error(err)
+		}
 	}
 
-	data = make([]byte, 0)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(``)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`"`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`{`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[,]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`{n}`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`{"abc":"xyz",}`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[n]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`{null}`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[abc,]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[null]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[{"and":null}]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[{"or":null}]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[{"xor":null}]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[{"not":null}]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
-	}
-
-	data = []byte(`[{"abc":nil}]`)
-	if err := json.Unmarshal(data, &v); err == nil {
-		t.Fail()
+	/***** Negative Cases *****/
+	for _, data := range nj {
+		if err := json.Unmarshal(data, &v); err == nil {
+			t.Error(err)
+		}
 	}
 }
 
