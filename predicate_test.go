@@ -225,4 +225,50 @@ func TestExists(t *testing.T) {
 	if p.P(1) != true {
 		t.Fail()
 	}
+
+	p = Exists("", nil)
+	if p.P(nil) != true {
+		t.Fail()
+	}
+
+	p = Exists("", true)
+	if p.P(true) != true {
+		t.Fail()
+	}
+
+	p = Exists("", 1)
+	if p.P(1) != true {
+		t.Fail()
+	}
+
+	p = Exists("", "a")
+	if p.P("a") != true {
+		t.Fail()
+	}
+
+	/***** Negative Cases *****/
+	p = Exists("", nil)
+	if p.P(false) != false {
+		t.Fail()
+	}
+
+	p = Exists("", true)
+	if p.P(false) != false {
+		t.Fail()
+	}
+
+	p = Exists("", 1)
+	if p.P(2) != false {
+		t.Fail()
+	}
+
+	p = Exists("", "a")
+	if p.P("b") != false {
+		t.Fail()
+	}
+
+	p = Exists("", "a")
+	if p.P(nil) != false {
+		t.Fail()
+	}
 }
