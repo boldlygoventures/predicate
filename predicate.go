@@ -114,27 +114,30 @@ func Not(p ...Predicate) Predicate {
 // Exists returns a PredicateFunc that will return true only if x[k] is in set s.
 func Exists(k string, s interface{}) Predicate {
 	return PredicateFunc(func(x X) bool {
+		var b bool
 		if y, ok := x.(map[string]interface{}); ok {
 			x = y[k]
 		}
 
 		switch s := s.(type) {
-		case map[string]interface{}:
+		case map[string]interface{}: //json: object
 			for _, v := range s {
 				if v == x {
-					return true
+					b = true
+					break
 				}
 			}
-		case []interface{}:
+		case []interface{}: //json: list
 			for _, v := range s {
 				if v == x {
-					return true
+					b = true
+					break
 				}
 			}
 		default: //json: string, float64, bool, nil
-			return s == x
+			b = s == x
 		}
 
-		return false
+		return b
 	})
 }
