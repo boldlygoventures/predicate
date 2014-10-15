@@ -29,6 +29,7 @@ import (
 	"fmt"
 )
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (p *And) UnmarshalJSON(data []byte) error {
 	var s Set
 	var err error
@@ -41,6 +42,7 @@ func (p *And) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (p *Or) UnmarshalJSON(data []byte) error {
 	var s Set
 	var err error
@@ -53,6 +55,7 @@ func (p *Or) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (p *Xor) UnmarshalJSON(data []byte) error {
 	var s Set
 	var err error
@@ -65,6 +68,7 @@ func (p *Xor) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (p *Set) UnmarshalJSON(data []byte) error {
 	var v interface{}
 	var err error
