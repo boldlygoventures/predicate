@@ -51,12 +51,14 @@ func False() Predicate {
 	})
 }
 
+// A Set represents a set of Predicates.
 type Set []Predicate
 
+// An And predicate is of a set of Predicates that all must be true for it to be true.
 type And Set
 
-// P returns true if and only all of its member Predicates is true for x. The logic is short circuited,
-// returning false when a member Predicate is false.
+// P implements the Predicate interface and returns true iff all of its member Predicates are true for x. The logic is
+// short circuited, returning false when a member Predicate is false.
 func (p And) P(x interface{}) bool {
 	for _, p := range p {
 		if !p.P(x) {
@@ -67,10 +69,11 @@ func (p And) P(x interface{}) bool {
 	return true
 }
 
+// An Or predicate is of a set of Predicates that at least one must be true for it to be true.
 type Or Set
 
-// P returns true if any of its member Predicates is true for x. The logic is short circuited,
-// returning true when a member Predicate is true.
+// P implements the Predicate interface and returns true if any of its member Predicates is true for x. The logic is
+// short circuited, returning true when a member Predicate is true.
 func (p Or) P(x interface{}) bool {
 	for _, p := range p {
 		if p.P(x) {
@@ -81,10 +84,11 @@ func (p Or) P(x interface{}) bool {
 	return false
 }
 
+// An Xor predicate is of a set of Predicates that only one must be true for it to be true.
 type Xor Set
 
-// P returns true if and only if one of its member Predicates is true for x. The logic is short circuited, returning
-// false when a second member Predicate is true.
+// P implements the Predicate interface and returns true iff one of its member Predicates is true for x. The logic is
+// short circuited, returning false when a second member Predicate is true.
 func (p Xor) P(x interface{}) bool {
 	var n int
 	for _, p := range p {
