@@ -53,6 +53,18 @@ func (p *Or) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *Xor) UnmarshalJSON(data []byte) error {
+	var s Set
+	var err error
+
+	if err = json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	*p = Xor(s)
+	return nil
+}
+
 func (p *Set) UnmarshalJSON(data []byte) error {
 	var v interface{}
 	var err error

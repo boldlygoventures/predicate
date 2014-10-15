@@ -95,6 +95,24 @@ func TestOr_UnmarshalJSON(t *testing.T) {
 	}
 }
 
+func TestXor_UnmarshalJSON(t *testing.T) {
+	var v Xor
+
+	/***** Positive Cases *****/
+	for _, data := range pj {
+		if err := json.Unmarshal([]byte(data), &v); err != nil {
+			t.Error(err)
+		}
+	}
+
+	/***** Negative Cases *****/
+	for _, data := range nj {
+		if err := json.Unmarshal(data, &v); err == nil {
+			t.Error(err)
+		}
+	}
+}
+
 func TestSet_UnmarshalJSON(t *testing.T) {
 	var v Set
 
