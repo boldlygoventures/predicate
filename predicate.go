@@ -25,31 +25,28 @@ SOFTWARE.
 // Package predicate defines the Predicate interface and provides basic predicates.
 package predicate
 
-// X represents a value to be evaluated by a Predicate.
-type X interface{}
-
 type Predicate interface {
-	P(X) bool
+	P(interface{}) bool
 }
 
 // PredicateFunc maps X to bool
-type PredicateFunc func(X) bool
+type PredicateFunc func(interface{}) bool
 
 // P satisfies the Predicate interface.
-func (p PredicateFunc) P(x X) bool {
+func (p PredicateFunc) P(x interface{}) bool {
 	return p(x)
 }
 
 // True returns a PredicateFunc that will always return true, for any x.
 func True() Predicate {
-	return PredicateFunc(func(x X) bool {
+	return PredicateFunc(func(x interface{}) bool {
 		return true
 	})
 }
 
 // True returns a PredicateFunc that will always return false, for any x.
 func False() Predicate {
-	return PredicateFunc(func(x X) bool {
+	return PredicateFunc(func(x interface{}) bool {
 		return false
 	})
 }
@@ -60,7 +57,7 @@ type And Set
 
 // P returns true if and only all of its member Predicates is true for x. The logic is short circuited,
 // returning false when a member Predicate is false.
-func (p And) P(x X) bool {
+func (p And) P(x interface{}) bool {
 	for _, p := range p {
 		if !p.P(x) {
 			return false
@@ -74,7 +71,7 @@ type Or Set
 
 // P returns true if any of its member Predicates is true for x. The logic is short circuited,
 // returning true when a member Predicate is true.
-func (p Or) P(x X) bool {
+func (p Or) P(x interface{}) bool {
 	for _, p := range p {
 		if p.P(x) {
 			return true
@@ -88,7 +85,7 @@ type Xor Set
 
 // P returns true if and only if one of its member Predicates is true for x. The logic is short circuited, returning
 // false when a second member Predicate is true.
-func (p Xor) P(x X) bool {
+func (p Xor) P(x interface{}) bool {
 	var n int
 	for _, p := range p {
 		if p.P(x) {
@@ -106,14 +103,14 @@ func (p Xor) P(x X) bool {
 
 // Not returns a PredicateFunc that will return false if any of the passed Predicates is true for x.
 func Not(p ...Predicate) Predicate {
-	return PredicateFunc(func(x X) bool {
+	return PredicateFunc(func(x interface{}) bool {
 		return !Or(p).P(x)
 	})
 }
 
 // Exists returns a PredicateFunc that will return true only if x[k] is in set s.
 func Exists(k string, s interface{}) Predicate {
-	return PredicateFunc(func(x X) bool {
+	return PredicateFunc(func(x interface{}) bool {
 		var b bool
 		if y, ok := x.(map[string]interface{}); ok {
 			x = y[k]
