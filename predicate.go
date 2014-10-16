@@ -37,20 +37,6 @@ func (p PredicateFunc) P(x interface{}) bool {
 	return p(x)
 }
 
-// True returns a PredicateFunc that will always return true, for any x.
-func True() Predicate {
-	return PredicateFunc(func(x interface{}) bool {
-		return true
-	})
-}
-
-// True returns a PredicateFunc that will always return false, for any x.
-func False() Predicate {
-	return PredicateFunc(func(x interface{}) bool {
-		return false
-	})
-}
-
 // A Set represents a set of Predicates.
 type Set []Predicate
 
@@ -140,5 +126,19 @@ func Exists(k string, s interface{}) Predicate {
 		}
 
 		return b
+	})
+}
+
+// True returns a PredicateFunc that will always return true, for any x.
+func True() Predicate {
+	return PredicateFunc(func(x interface{}) bool {
+		return true
+	})
+}
+
+// False returns a PredicateFunc that will always return false, for any x.
+func False() Predicate {
+	return PredicateFunc(func(x interface{}) bool {
+		return false
 	})
 }
