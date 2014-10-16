@@ -25,14 +25,15 @@ SOFTWARE.
 // Package predicate defines the Predicate interface and provides basic predicates.
 package predicate
 
+// Predicate is an interface implemented by objects that can map an value to true or false.
 type Predicate interface {
 	P(interface{}) bool
 }
 
-// PredicateFunc maps X to bool
+// The PredicateFunc type is an adapter to allow the use of ordinary functions as Predicates.
 type PredicateFunc func(interface{}) bool
 
-// P satisfies the Predicate interface.
+// P implements the Predicate interface
 func (p PredicateFunc) P(x interface{}) bool {
 	return p(x)
 }
@@ -98,7 +99,7 @@ func Not(p ...Predicate) Predicate {
 	})
 }
 
-// Exists returns a PredicateFunc that will return true only if x[k] is in set s.
+// Exists returns a Predicate that will return true only if x[k] is in set s.
 func Exists(k string, s interface{}) Predicate {
 	return PredicateFunc(func(x interface{}) bool {
 		var b bool
@@ -129,16 +130,16 @@ func Exists(k string, s interface{}) Predicate {
 	})
 }
 
-// True returns a PredicateFunc that will always return true, for any x.
+// True returns a Predicate that will always return true, for any x.
 func True() Predicate {
-	return PredicateFunc(func(x interface{}) bool {
+	return PredicateFunc(func(interface{}) bool {
 		return true
 	})
 }
 
-// False returns a PredicateFunc that will always return false, for any x.
+// False returns a Predicate that will always return false, for any x.
 func False() Predicate {
-	return PredicateFunc(func(x interface{}) bool {
+	return PredicateFunc(func(interface{}) bool {
 		return false
 	})
 }
